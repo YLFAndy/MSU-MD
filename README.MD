@@ -22,14 +22,12 @@ Lastly, and this is the part that can really trip a person up, you need to forma
 
 ### MiSTer FPGA
 /games/MegaCD/<FolderName>
-       |
 	-> <bin file>
 	-> <cue file>
 	-> cart.rom (rename the patched file)
 		
 ### GenesisPlus/Everdrive
 <GamesFolder>/<FolderName>
-	|
 	 ->NameOfGame.bin
 	 ->NameOfGame.cue
 	 ->NameOfGame.md
