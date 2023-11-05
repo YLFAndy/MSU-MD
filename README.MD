@@ -22,15 +22,15 @@ Lastly, and this is the part that can really trip a person up, you need to forma
 
 ### MiSTer FPGA
 /games/MegaCD/\<FolderName\></br>
-	\-\> \<bin file\>
-	\-\> \<cue file\>
-	\-\> cart.rom (rename the patched file)
+	\-\> \<bin file\></br>
+	\-\> \<cue file\></br>
+	\-\> cart.rom (rename the patched file)</br>
 		
 ### GenesisPlus/Everdrive
 \<GamesFolder\>/\<FolderName\></br>
-	 \-\>NameOfGame.bin
-	 \-\>NameOfGame.cue
-	 \-\>NameOfGame.md
+	 \-\>NameOfGame.bin</br>
+	 \-\>NameOfGame.cue</br>
+	 \-\>NameOfGame.md</br>
 		 
 		 
 There are probably a thousand other emulators and that support this, but those are the basics. 
