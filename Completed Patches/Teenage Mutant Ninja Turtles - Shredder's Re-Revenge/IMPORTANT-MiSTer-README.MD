@@ -1,0 +1,3 @@
+# IMPORTANT
+MiSTer requires an update to the MegaCD core (equal to or newer than 30 Oct, 2023) to play this. The existant underlying MegaDrive code can't handle V30 video mode switching and causes a black screen with music, but no gameplay. This is similar to how the vanilla patch works on the Spiritualized OpenFPGA core.
+Again, please ensure you have a build of the MegaCD core from AFTER October 30, 2023. 
