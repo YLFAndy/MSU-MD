@@ -8,7 +8,7 @@ MSU-MD is a Mode 1 driver implementation for Sega MegaDrive created by krikzz, o
 The format is backwards compatible with real hardware and is adjacent to MD+, an implementation with FPGA and emulation in mind.
 MSU-MD is highly portable and is available on a number of platforms without special hardware. 
 
-## But...Why? </reynolds>
+## But...Why? \</reynolds\>
 This all basically came about because I wanted to use CD music with the absoultely **excellent** Shredder's Re-Revenge patch from Savok. My primary method for gaming is the MiSTer FPGA which does not currently support MD+. 
 Owing to this, I began exploring what it took to create a soundpack and implement the driver in the existing game. I did so with fairly decent success and decided to keep going. Nobody else seems to be doing much in the space.
 
@@ -21,16 +21,16 @@ Next, you need to apply the patch (either IPS or BPS, depending on how I felt th
 Lastly, and this is the part that can really trip a person up, you need to format the layout of the files in a way that works for your player of choice. Some examples:
 
 ### MiSTer FPGA
-/games/MegaCD/<FolderName></br>
-	-> <bin file>
-	-> <cue file>
-	-> cart.rom (rename the patched file)
+/games/MegaCD/\<FolderName\></br>
+	\-\> \<bin file\>
+	\-\> \<cue file\>
+	\-\> cart.rom (rename the patched file)
 		
 ### GenesisPlus/Everdrive
-<GamesFolder>/<FolderName></br>
-	 ->NameOfGame.bin
-	 ->NameOfGame.cue
-	 ->NameOfGame.md
+\<GamesFolder\>/\<FolderName\></br>
+	 \-\>NameOfGame.bin
+	 \-\>NameOfGame.cue
+	 \-\>NameOfGame.md
 		 
 		 
 There are probably a thousand other emulators and that support this, but those are the basics. 
