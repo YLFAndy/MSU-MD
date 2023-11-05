@@ -21,13 +21,13 @@ Next, you need to apply the patch (either IPS or BPS, depending on how I felt th
 Lastly, and this is the part that can really trip a person up, you need to format the layout of the files in a way that works for your player of choice. Some examples:
 
 ### MiSTer FPGA
-/games/MegaCD/<FolderName>
+/games/MegaCD/<FolderName></br>
 	-> <bin file>
 	-> <cue file>
 	-> cart.rom (rename the patched file)
 		
 ### GenesisPlus/Everdrive
-<GamesFolder>/<FolderName>
+<GamesFolder>/<FolderName></br>
 	 ->NameOfGame.bin
 	 ->NameOfGame.cue
 	 ->NameOfGame.md
