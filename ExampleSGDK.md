@@ -6,44 +6,51 @@ Caller Target: 0x00XXXXZZ
 
 ### Driver Load 0xXXXXNN
 This should be placed at the head of the driver and called into from the address 0x05, with a callback to whatever was in that address previously. For this, we'll assume the standard 0x200 program start.
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`movea.l #0x0, SP`|`2E 78 00 00`|Zeroes out the stack pointer|
 |`jsr #$0x00XXXXMM`|`4E B9 00 XX XX MM`|Jumps to the MSU driver initialization head|
 |`jsr #$0x00XXXXAA`|`4E B9 00 XX XX AA`|Wait for MegaCD Ready|
 |`move.l #0x1601, $0xA12010`| 00 00 00 66 0A 33 FC 16 01 4E B9 00 2B 0D A0 4E F9 00 00 02 00
 ### Wait for MegaCD Ready 0xXXXXAA
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`tst.b $0xA12020`|`4A 39 00 A1 20 20`|Check the status of the MegaCD hardware (True if 0)|
 |`bne.b`|`66 F8`|If not equal to 0, repeat check (wait for ready)|
 |`rts`|`4E 75`|Return|
 
 ### Tick MCD Command Clock 0xXXXXBB
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`addq.b #$0x1, $0xA1201F`|`52 39 00 A1 20 1F`|Add one to the command clock counter for MegaCD|
 |`rts`|`4E 75`|Return|
 
 ### Restore Stack and Registers 0xXXXXCC
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`movem.l A6/A3-A2/D4-D0`|`4C DF FC 1F`|Restore the registers from before the call *TODO:Trim to necessary*|
 |`lea (0xFC,SP),SP`|`4F EF 00 FC`|Restore the stack pointer to the pre-call position *TODO:Update with math for current SP*|
 |`rts`|`4E 75`|Return|
 
 ### Play No Loop 
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`clr.l D0`|`42 80`|Zero out register D0 to be used later|
 |`ori.w #$0x1100, D0`|`80 7C 11 00`|Or the play command *11* with D0|
 |`jsr #$0x00XXXXDD`|`4E B9 00 XX XX DD`|Jump to the absolute location of the main player entry point| 
 |`rts`|`4E 75`|Return to external caller|
 
 ### Play Loop 
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`clr.l D0`|`42 80`|Zero out register D0 to be used later|
 |`ori.w #$0x1200, D0`|`80 7C 12 00`|Or the loop command *12* with D0|
 |`jsr #$0x00XXXXDD`|`4E B9 00 XX XX DD`|Jump to the absolute location of the main player entry point|
 |`rts`|`4E 75`|Return|
 
 ### Play Loop Offset
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`clr.l D0`|`42 80`|Zero out register D0.l to be used later|
 |`ori.w #$0x1A00, D0`|`80 7C 1A 00`|Or the play loop offset command *1A* with D0 **NOTE** this takes an additional argument|
 |`jsr #$0x00XXXXDD`|`4E B9 00 XX XX DD`|Jump to the absolute location of the main player entry point|
@@ -51,7 +58,8 @@ This should be placed at the head of the driver and called into from the address
 
 
 ### Main Player 0xXXXXDD
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`lea (-$fc,A7), A7`|`4F EF FF 04`|Move the stack pointer up the stack 0xFC steps, the top of the stack|
 |`movem.l D0-D4/A2-A3/A6, -(A7)|`48 E7 F8 32`|Move the values of existing registers onto the top of the stack *TODO:Trim to necessary*|
 |`move.w ($120,A7), D1`|`11 17 01 18`|Get the value from 0x120 bytes into the stack (We moved the stack pointer ahead 0xFC steps, plus the long lengths of 8 registers, or 0x20 bytes. The track number lives on the stack at FFFFFF77, 118 words down from the current stack pointer)|
@@ -77,7 +85,8 @@ This should be placed at the head of the driver and called into from the address
 |`rts`|`4E 75`|Return to caller|
 
 ### Loop With Offset Handler
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |Switch based on track number - varies by game. Offsets are in sectors. Each second is 75 sectors. The following entries are for Darius as an example|
 |`lsl.l #0x08, D0`|`E1 88`| Left shift D0 command 1 byte.|
 |`cmpi.b #0x09,D1`|`0C 01 00 09`|Compare the track number to 0x09 (10th track)|
@@ -90,14 +99,16 @@ This should be placed at the head of the driver and called into from the address
 |`bra.b #0xFD`|`60 FD`|Branch back with 00 in offset if no track found|
 
 ### Pause Playback Entry 0x00XXXXEE
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`jsr #$0x00XXXXAA`|`4E B9 00 XX XX AA`|Wait for MegaCD|
 |`move.w #0x1300, $0x00A12010`|`33 FC 13 00 00 A1 20 10`|Send pause command to MegaCD|
 |`jsr #$0x00XXXXBB`|`4E B9 00 XX XX BB`|Tick the command clock|
 |`rts`|`4E 75`|Return|
 
 ### Resume Playback Entry 0x00XXXXEE
-|ASM Command|68K Hex Code|Description|
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
 |`jsr #$0x00XXXXAA`|`4E B9 00 XX XX AA`|Wait for MegaCD|
 |`move.w #0x1400, $0x00A12010`|`33 FC 14 00 00 A1 20 10`|Send pause command to MegaCD|
 |`jsr #$0x00XXXXBB`|`4E B9 00 XX XX BB`|Tick the command clock|
