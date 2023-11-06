@@ -10,8 +10,13 @@ This should be placed at the head of the driver and called into from the address
 | --- | --- | --- |
 |`movea.l #0x0, SP`|`2E 78 00 00`|Zeroes out the stack pointer|
 |`jsr #$0x00XXXXMM`|`4E B9 00 XX XX MM`|Jumps to the MSU driver initialization head|
+|`tst.b D0`|`4A 00`|Check that D0 is 0 (CD driver loaded)|
+|`bne.b 0xD`|`66 0D`|Branch to return if there's no MegaCD hardware|
 |`jsr #$0x00XXXXAA`|`4E B9 00 XX XX AA`|Wait for MegaCD Ready|
-|`move.l #0x1601, $0xA12010`| 00 00 00 66 0A 33 FC 16 01 4E B9 00 2B 0D A0 4E F9 00 00 02 00
+|`move.l #0x1601, $0xA12010`|`33 FC 16 01 00 A1 20 10`|Send the No Seek command to MegaCD|
+|`jsr 0x00XXXXBB`|`4E B9 00 XX XX BB`|Tick the command clock|
+|`jmp 0x00000200`|`4E F9 00 00 02 00`|Jump back to program load (may not be 0x200, check your rom header!)|
+|`
 ### Wait for MegaCD Ready 0xXXXXAA
 | ASM Command | 68K Hex Code | Description |
 | --- | --- | --- |
