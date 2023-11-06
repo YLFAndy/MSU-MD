@@ -72,7 +72,7 @@ This should be placed at the head of the driver and called into from the address
 |`blt.b #0x0E`|`6D 0E`|Branch over the return call, otherwise hand back to the player.|
 |`jsr 0xXXXXCC`|`4E B9 00 XX XX CC`|Jump to Restore Stack and Registers|
 |`rts`|`4E 75`|Return to caller|
-|`cmpi.l #0x53454741, $400100.l`|`0C B9 53 45 47 41 00 40 01 00`|Check for MegaCD (allows cart to be played without CD)|
+|`cmpi.l #0x53454741, $400100.l`|`0C B9 53 45 47 41 00 40 01 00`|Check for MegaCD (allows cart to be played without CD) by looking for 'SEGA' in address 0x400100|
 |`beq.b #0xF`|`67 0F`|Branch ahead 0xF if CD present
 |`jsr 0xXXXXCC`|`4E B9 00 XX XX CC`|Jump to Restore Stack and Registers|
 |`jmp #$0x00XXXXZZ`|`4E F9 00 XX XX ZZ`|Jump to the existing player since there's no CD|
