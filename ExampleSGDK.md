@@ -16,7 +16,7 @@ This should be placed at the head of the driver and called into from the address
 |`move.l #0x1601, $0xA12010`|`33 FC 16 01 00 A1 20 10`|Send the No Seek command to MegaCD|
 |`jsr 0x00XXXXBB`|`4E B9 00 XX XX BB`|Tick the command clock|
 |`jmp 0x00000200`|`4E F9 00 00 02 00`|Jump back to program load (may not be 0x200, check your rom header!)|
-|`
+
 ### Wait for MegaCD Ready 0xXXXXAA
 | ASM Command | 68K Hex Code | Description |
 | --- | --- | --- |
