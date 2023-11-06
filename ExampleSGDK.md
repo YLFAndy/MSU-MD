@@ -99,6 +99,7 @@ This should be placed at the head of the driver and called into from the address
 |`ori.b #0xC6,D0`|`00 00 00 C6`|Puts C6 sectors (2.634 seconds) into the offset argument for Track 9|
 |`bra.b #0xD7`|`60 D7`|Branch back 0xD7 to player|
 |`cmpi.b #0x07, D0`|`0C 01 00 07`|Compare the track number to 0x07 (8th track)|
+|`bne.b #0x6`|`66 06`|Branch ahead 6 to next check if not equal|
 |`ori.b #0x07,D0`|`00 00 00 07`|Puts 7 sectors (.081 seconds) into the offset argument for Track 7|
 |`bra.b #0xED`|`60 ED`|Branch back 0xED to cascade branch to player|
 |`bra.b #0xFD`|`60 FD`|Branch back with 00 in offset if no track found|
