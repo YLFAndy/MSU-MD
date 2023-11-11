@@ -30,11 +30,19 @@ This should be placed at the head of the driver and called into from the address
 |`addq.b #$0x1, $0xA1201F`|`52 39 00 A1 20 1F`|Add one to the command clock counter for MegaCD|
 |`rts`|`4E 75`|Return|
 
+### Preserve Stack, Stack Pointer, and Registers 0xXXXEE
+| ASM Command | 68K Hex Code | Description |
+| --- | --- | --- |
+|`lea (-$fa,A7), A7`|`4F EF FF 04`|Move the stack pointer up the stack 0xFA steps, the top of the stack|
+|`movem.l D0-D4/A2-A3/A6, -(A7)`|`48 E7 F8 32`|Move the values of existing registers onto the top of the stack *TODO:Trim to necessary*|
+|`move.w ($124,A7), D1`|`22 2F 01 24`|Get the value from 0x124 bytes into the stack (We moved the stack pointer ahead 0xFC steps, plus the long lengths of 8 registers, or 0x20 bytes. The track number lives on the stack at FFFFFF77, 118 words down from the current stack pointer)|
+|`rst`|`4E 75`|Return|
+
 ### Restore Stack and Registers 0xXXXXCC
 | ASM Command | 68K Hex Code | Description |
 | --- | --- | --- |
 |`movem.l A6/A3-A2/D4-D0`|`4C DF FC 1F`|Restore the registers from before the call *TODO:Trim to necessary*|
-|`lea (0xFC,SP),SP`|`4F EF 00 FC`|Restore the stack pointer to the pre-call position *TODO:Update with math for current SP*|
+|`lea (0xFA,SP),SP`|`4F EF 00 FA`|Restore the stack pointer to the pre-call position *TODO:Update with math for current SP*|
 |`rts`|`4E 75`|Return|
 
 ### Play No Loop 
@@ -65,19 +73,18 @@ This should be placed at the head of the driver and called into from the address
 ### Main Player 0xXXXXDD
 | ASM Command | 68K Hex Code | Description |
 | --- | --- | --- |
-|`lea (-$fc,A7), A7`|`4F EF FF 04`|Move the stack pointer up the stack 0xFC steps, the top of the stack|
-|`movem.l D0-D4/A2-A3/A6, -(A7)|`48 E7 F8 32`|Move the values of existing registers onto the top of the stack *TODO:Trim to necessary*|
-|`move.w ($120,A7), D1`|`11 17 01 18`|Get the value from 0x120 bytes into the stack (We moved the stack pointer ahead 0xFC steps, plus the long lengths of 8 registers, or 0x20 bytes. The track number lives on the stack at FFFFFF77, 118 words down from the current stack pointer)|
+|`move.w ($118,A7), D0`|`20 2F 01 24`|Move the track number into D1|
+
 |`cmpi.b #0x14, D1`|`0C 01 00 14`|Check the track against 0x14 (this sets Not Equal and Carry flag, Carry set means it's less than)|
-|`blt.b #0x0E`|`6D 0E`|Branch over the return call, otherwise hand back to the player.|
+|`blt.b #0x08`|`6D 08`|Branch over the return call, otherwise hand back to the player.|
 |`jsr 0xXXXXCC`|`4E B9 00 XX XX CC`|Jump to Restore Stack and Registers|
 |`rts`|`4E 75`|Return to caller|
 |`cmpi.l #0x53454741, $400100.l`|`0C B9 53 45 47 41 00 40 01 00`|Check for MegaCD (allows cart to be played without CD) by looking for 'SEGA' in address 0x400100|
-|`beq.b #0xF`|`67 0F`|Branch ahead 0xF if CD present
+|`beq.b #0xF`|`67 0C`|Branch ahead 0xC if CD present
 |`jsr 0xXXXXCC`|`4E B9 00 XX XX CC`|Jump to Restore Stack and Registers|
 |`jmp #$0x00XXXXZZ`|`4E F9 00 XX XX ZZ`|Jump to the existing player since there's no CD|
 |`clr.l D3`|`42 83`|Zero out D3|
-|`ori.l #0xA12010,D3`|`0A 83 00 A1 20 10`|Put the command address in D3|
+|`ori.l #0xA12010,D3`|`00 83 00 A1 20 10`|Put the command address in D3|
 |`lea D3,A2`|`45 C3`|Put the address into A2|
 |`ori.w D1,D0`|`80 01`|Or the play command and track number into D0.| 
 |`addi.b #0x1,D0`|`06 00 00 01`|Add one to the track since track lists are not zero based|
@@ -87,6 +94,7 @@ This should be placed at the head of the driver and called into from the address
 |`move.l D0, (A2)`|`24 83`|Send the play track command and track number to the MegaCD command register|
 |`jsr #$0x00XXXXBB`|`4E B9 00 XX XX BB`|Tick the command clock|
 |`jsr #$0x00XXXXCC`|`4E B9 00 XX XX CC`|Restore the stack and registers|
+|`unlk `|``|Destroy the workspace|
 |`rts`|`4E 75`|Return to caller|
 
 ### Loop With Offset Handler

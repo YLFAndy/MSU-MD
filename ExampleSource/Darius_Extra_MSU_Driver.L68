@@ -1,0 +1,238 @@
+002B0C70 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 11/10/2023 10:04:19 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+002B0C70                             7      ORG    $2b0c70
+002B0C70                             8  START:                 
+002B0C70                             9  
+002B0C70                            10  *5bf7e Play
+002B0C70                            11  *If found jmp 5c1e2, else jmp 5bf7e
+002B0C70                            12  SET_LOOP_DELAY
+002B0C70  4EB9 002B0E5C             13      jsr PRESERVE_REGISTERS
+002B0C76  4EB9 002B0E38             14      jsr WAIT_FOR_READY
+002B0C7C  34BC 1601                 15      move.w #$1601, (A2)
+002B0C80  4EB9 002B0E3E             16      jsr TICK_COMMAND_CLOCK
+002B0C86  4EB9 002B0E84             17      jsr RESTORE_REGISTERS
+002B0C8C  4E75                      18      rts
+002B0C8E                            19      
+002B0C8E                            20  SET_CDDA_VOLUME
+002B0C8E  4EB9 002B0E5C             21      jsr PRESERVE_REGISTERS
+002B0C94  4EB9 002B0E38             22      jsr WAIT_FOR_READY
+002B0C9A  34BC 15B0                 23      move.w #$15B0, (A2)
+002B0C9E  4EB9 002B0E3E             24      jsr TICK_COMMAND_CLOCK
+002B0CA4  4EB9 002B0E84             25      jsr RESTORE_REGISTERS
+002B0CAA  4E75                      26      rts
+002B0CAC                            27  
+002B0CAC                            28  STOP_PLAYBACK
+002B0CAC  4EB9 002B0E5C             29      jsr PRESERVE_REGISTERS
+002B0CB2  40C0                      30      move.w SR,D0
+002B0CB4  4EB9 002B0E04             31      jsr CHECK_MEGACD_EXIST
+002B0CBA  6608                      32      bne.b RETURN_STOP_NOW
+002B0CBC  4252                      33      clr.w (A2)
+002B0CBE  4EB9 002B0E10             34      jsr PAUSE_MEGACD
+002B0CC4                            35  RETURN_STOP_NOW
+002B0CC4  46C0                      36      move.w D0,SR
+002B0CC6  4EB9 002B0E84             37      jsr RESTORE_REGISTERS
+002B0CCC  4EB9 000667C2             38      jsr $667c2
+002B0CD2  4E75                      39      rts
+002B0CD4                            40      
+002B0CD4                            41      
+002B0CD4                            42  PAUSE_PLAYBACK_GAME
+002B0CD4  4EB9 002B0E5C             43      jsr PRESERVE_REGISTERS
+002B0CDA  40C0                      44      move.w SR,D0
+002B0CDC  4EB9 002B0E04             45      jsr CHECK_MEGACD_EXIST
+002B0CE2  6600 000C                 46      bne RETURN_PAUSE_NOW
+002B0CE6  143C 0025                 47      move.b #$25,D2
+002B0CEA  4EB9 002B0E10             48      jsr PAUSE_MEGACD
+002B0CF0                            49  RETURN_PAUSE_NOW
+002B0CF0  46C0                      50      move.w D0,SR
+002B0CF2  4EB9 002B0E84             51      jsr RESTORE_REGISTERS
+002B0CF8  4EB9 00058952             52      jsr $58952
+002B0CFE  4E75                      53      rts
+002B0D00                            54      
+002B0D00                            55  RESUME_PLAYBACK_GAME
+002B0D00  4EB9 002B0E5C             56      jsr PRESERVE_REGISTERS
+002B0D06  40C0                      57      move.w SR,D0
+002B0D08  4EB9 002B0E04             58      jsr CHECK_MEGACD_EXIST
+002B0D0E  6600 0008                 59      bne RETURN_RESUME_NOW
+002B0D12  4EB9 002B0E26             60      jsr RESUME_MEGACD
+002B0D18                            61  RETURN_RESUME_NOW
+002B0D18  46C0                      62      move.w D0,SR
+002B0D1A  4EB9 002B0E84             63      jsr RESTORE_REGISTERS
+002B0D20  4EB9 000587CC             64      jsr $587cc
+002B0D26  4E75                      65      rts
+002B0D28                            66  
+002B0D28                            67  PLAY_SINGLE
+002B0D28  4EB9 002B0E5C             68      jsr PRESERVE_REGISTERS
+002B0D2E  4282                      69      clr.l D2
+002B0D30  4283                      70      clr.l D3
+002B0D32  0042 1100                 71      ori.w #$1100,D2
+002B0D36  6000 0068                 72      bra.w PLAY
+002B0D3A                            73    
+002B0D3A                            74  PLAY_LOOP
+002B0D3A  4EB9 002B0E5C             75      jsr PRESERVE_REGISTERS
+002B0D40  4282                      76      clr.l D2
+002B0D42  4283                      77      clr.l D3
+002B0D44  0042 1200                 78      ori.w #$1200,D2
+002B0D48  6000 0056                 79      bra.w PLAY
+002B0D4C                            80  
+002B0D4C                            81  PAUSE_MUSIC_PLAYER
+002B0D4C  4EB9 002B0E5C             82      jsr PRESERVE_REGISTERS
+002B0D52  40C0                      83      move.w SR,D0
+002B0D54  4EB9 002B0E04             84      jsr CHECK_MEGACD_EXIST
+002B0D5A  6600 000C                 85      bne RETURN_PAUSE_PLAYER_NOW
+002B0D5E  143C 0025                 86      move.b #$25,D2
+002B0D62  4EB9 002B0E10             87      jsr PAUSE_MEGACD
+002B0D68                            88  RETURN_PAUSE_PLAYER_NOW
+002B0D68  46C0                      89      move.w D0,SR
+002B0D6A  4EB9 002B0E84             90      jsr RESTORE_REGISTERS
+002B0D70  4EB9 0004FFE4             91      jsr $4ffe4
+002B0D76  4E75                      92      rts
+002B0D78                            93  
+002B0D78                            94  RESUME_MUSIC_PLAYER
+002B0D78  4EB9 002B0E5C             95      jsr PRESERVE_REGISTERS
+002B0D7E  40C0                      96      move.w SR,D0
+002B0D80  4EB9 002B0E04             97      jsr CHECK_MEGACD_EXIST
+002B0D86  6600 0008                 98      bne RETURN_RESUME_PLAYER_NOW
+002B0D8A  4EB9 002B0E26             99      jsr RESUME_MEGACD
+002B0D90                           100  RETURN_RESUME_PLAYER_NOW
+002B0D90  46C0                     101      move.w D0,SR
+002B0D92  4EB9 002B0E84            102      jsr RESTORE_REGISTERS
+002B0D98  4EB9 00059E30            103      jsr $59e30
+002B0D9E  4E75                     104      rts
+002B0DA0                           105  
+002B0DA0                           106  
+002B0DA0                           107  PLAY
+002B0DA0  40C0                     108      move.w SR,D0
+002B0DA2  4EB9 002B0E04            109      jsr CHECK_MEGACD_EXIST
+002B0DA8  6606                     110      bne.b RETURN_NOW
+002B0DAA  0C01 0014                111      cmpi.b #$14,D1
+002B0DAE  6D08                     112      blt.b TEST_PLAYABLE_TRUE
+002B0DB0                           113  RETURN_NOW
+002B0DB0  46C0                     114      move.w D0,SR
+002B0DB2  4EF9 0005BF7E            115      jmp $5bf7e
+002B0DB8                           116  TEST_PLAYABLE_TRUE
+002B0DB8  5201                     117      addq.b #$1,D1
+002B0DBA  0C42 1200                118      cmpi.w #$1200,D2
+002B0DBE  6700 0022                119      beq.w LOOP_OFFSET_HANDLER
+002B0DC2                           120  CONTINUE_PLAYER
+002B0DC2  8401                     121      or.b D1,D2
+002B0DC4  4EB9 002B0E38            122      jsr WAIT_FOR_READY
+002B0DCA  3482                     123      move.w D2,(A2)
+002B0DCC  3683                     124      move.w D3,(A3)
+002B0DCE  4EB9 002B0E3E            125      jsr TICK_COMMAND_CLOCK
+002B0DD4  46C0                     126      move.w D0,SR
+002B0DD6  4EB9 002B0E84            127      jsr RESTORE_REGISTERS
+002B0DDC  4EF9 0005C1E2            128      jmp $5c1e2
+002B0DE2                           129      
+002B0DE2                           130  LOOP_OFFSET_HANDLER
+002B0DE2  0C01 0009                131      cmpi.b #$9,D1
+002B0DE6  660C                     132      bne.b CHECK_2
+002B0DE8  343C 1A00                133      move.w #$1A00,D2
+002B0DEC  263C 000000C3            134      move.l #$C3,D3
+002B0DF2  60CE                     135      bra.b CONTINUE_PLAYER
+002B0DF4                           136  CHECK_2
+002B0DF4  0C01 0007                137      cmpi.b #$7,D1
+002B0DF8  6608                     138      bne.b CHECK_3
+002B0DFA  343C 1A00                139      move.w #$1A00,D2
+002B0DFE  7607                     140      move.l #$7,D3
+002B0E00  60C0                     141      bra.b CONTINUE_PLAYER
+002B0E02                           142  CHECK_3
+002B0E02  60BE                     143      bra.b CONTINUE_PLAYER
+002B0E04                           144      
+002B0E04                           145  CHECK_MEGACD_EXIST
+002B0E04  0CB9 53454741 00400100   146      cmpi.l #$53454741,$400100
+002B0E0E  4E75                     147      rts
+002B0E10                           148  PAUSE_MEGACD
+002B0E10  4EB9 002B0E38            149      jsr WAIT_FOR_READY
+002B0E16  323C 1300                150      move.w #$1300,D1
+002B0E1A  8202                     151      or.b D2,D1
+002B0E1C  3481                     152      move.w D1,(A2)
+002B0E1E  4EB9 002B0E3E            153      jsr TICK_COMMAND_CLOCK
+002B0E24  4E75                     154      rts
+002B0E26                           155      
+002B0E26                           156  RESUME_MEGACD
+002B0E26  4EB9 002B0E38            157      jsr WAIT_FOR_READY
+002B0E2C  34BC 1400                158      move.w #$1400,(A2)
+002B0E30  4EB9 002B0E3E            159      jsr TICK_COMMAND_CLOCK
+002B0E36  4E75                     160      rts
+002B0E38                           161          
+002B0E38                           162  WAIT_FOR_READY
+002B0E38  4A15                     163      tst.b (A5)
+002B0E3A  66FC                     164      bne.b WAIT_FOR_READY
+002B0E3C  4E75                     165      rts
+002B0E3E                           166  TICK_COMMAND_CLOCK
+002B0E3E  5214                     167      addq.b #$1,(A4)
+002B0E40  4E75                     168      rts
+002B0E42                           169      
+002B0E42                           170  SET_MEGACD_IO_ADDRESSES
+002B0E42  247C 00A12010            171      move.l #$00a12010,A2  ;Command Address
+002B0E48  267C 00A12012            172      move.l #$00a12012,A3  ;Command Argument 2
+002B0E4E  287C 00A1201F            173      move.l #$00a1201f,A4  ;Command Clock
+002B0E54  2A7C 00A12020            174      move.l #$00a12020,A5  ;MegaCD Memory Space for presence check
+002B0E5A  4E75                     175      rts
+002B0E5C                           176      
+002B0E5C                           177  PRESERVE_REGISTERS
+002B0E5C  41D7                     178      lea (SP),A0
+002B0E5E  4FEF FF04                179      lea (-$fc,SP),SP
+002B0E62  48E7 FC3E                180      movem.l A6-A2/D5-D0,-(SP)
+002B0E66  4FD0                     181      lea (A0),SP
+002B0E68  41EF FF04                182      lea (-$fc,SP),A0
+002B0E6C  4280                     183      clr.l D0  ;Track Number
+002B0E6E  4281                     184      clr.l D1  ;Command
+002B0E70  4282                     185      clr.l D2  ;Command Arg 1
+002B0E72  4283                     186      clr.l D3  ;Command Arg 2
+002B0E74  4284                     187      clr.l D4  ;MegaCD Present
+002B0E76  4285                     188      clr.l D5  ;Volume
+002B0E78  322F 000A                189      move.w ($A,A7),D1 ;Get the track number from the stack
+002B0E7C  4EB9 002B0E42            190      jsr SET_MEGACD_IO_ADDRESSES
+002B0E82  4E75                     191      rts
+002B0E84                           192  
+002B0E84                           193  RESTORE_REGISTERS
+002B0E84  4CE8 7C3F FFD4           194      movem.l (-$2c,A0),D0-D5/A2-A6
+002B0E8A  4E75                     195      rts
+002B0E8C                           196      END START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CHECK_2             2B0DF4
+CHECK_3             2B0E02
+CHECK_MEGACD_EXIST  2B0E04
+CONTINUE_PLAYER     2B0DC2
+LOOP_OFFSET_HANDLER  2B0DE2
+PAUSE_MEGACD        2B0E10
+PAUSE_MUSIC_PLAYER  2B0D4C
+PAUSE_PLAYBACK_GAME  2B0CD4
+PLAY                2B0DA0
+PLAY_LOOP           2B0D3A
+PLAY_SINGLE         2B0D28
+PRESERVE_REGISTERS  2B0E5C
+RESTORE_REGISTERS   2B0E84
+RESUME_MEGACD       2B0E26
+RESUME_MUSIC_PLAYER  2B0D78
+RESUME_PLAYBACK_GAME  2B0D00
+RETURN_NOW          2B0DB0
+RETURN_PAUSE_NOW    2B0CF0
+RETURN_PAUSE_PLAYER_NOW  2B0D68
+RETURN_RESUME_NOW   2B0D18
+RETURN_RESUME_PLAYER_NOW  2B0D90
+RETURN_STOP_NOW     2B0CC4
+SET_CDDA_VOLUME     2B0C8E
+SET_LOOP_DELAY      2B0C70
+SET_MEGACD_IO_ADDRESSES  2B0E42
+START               2B0C70
+STOP_PLAYBACK       2B0CAC
+TEST_PLAYABLE_TRUE  2B0DB8
+TICK_COMMAND_CLOCK  2B0E3E
+WAIT_FOR_READY      2B0E38
