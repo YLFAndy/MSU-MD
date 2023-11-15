@@ -1,0 +1,44 @@
+003FB1A0 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 11/14/2023 1:58:32 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+003FB1A0                             7      ORG    $3fb1a0
+003FB1A0                             8  START:       
+003FB1A0  2E78 0000                  9      movea.l $0,SP
+003FB1A4  4EB9 003FB1D0             10      jsr $3fb1d0
+003FB1AA  4A00                      11      tst.b D0
+003FB1AC  6600 0016                 12      bne RETURN_TO_CALLER
+003FB1B0  3A3C 0001                 13      move.w #$1,D5
+003FB1B4  4EB9 003FBB80             14      jsr $3fbb80 ;Toggle Loop Delay
+003FB1BA  3A3C 00A0                 15      move.w #$00a0,D5
+003FB1BE  4EB9 003FBB9E             16      jsr $3fbb9e ;Adjust Volume
+003FB1C4                            17      
+003FB1C4                            18      
+003FB1C4                            19  RETURN_TO_CALLER
+003FB1C4  4EF8 0200                 20      jmp $200
+003FB1C8                            21   
+003FB1C8                            22      
+003FB1C8                            23      
+003FB1C8                            24      
+003FB1C8                            25      
+003FB1C8                            26      
+003FB1C8                            27      
+003FB1C8                            28      
+003FB1C8                            29  
+003FB1C8                            30      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+RETURN_TO_CALLER    3FB1C4
+START               3FB1A0

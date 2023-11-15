@@ -1,6 +1,9 @@
 # XGM Player Layout
 
-Caller Target: 0x00XXXXZZ
+This is a work in progress and is already wildly out of date. I will attempt to get it tightened up soon. This was just a place to keep notes that might be usefulf for anyone struggling with MSU-MD and SGDK games.
+
+ 
+Caller Target Placeholder: 0x00XXXXZZ
 
 ## Entry Points
 
@@ -8,7 +11,7 @@ Caller Target: 0x00XXXXZZ
 This should be placed at the head of the driver and called into from the address 0x05, with a callback to whatever was in that address previously. For this, we'll assume the standard 0x200 program start.
 | ASM Command | 68K Hex Code | Description |
 | --- | --- | --- |
-|`movea.l #0x0, SP`|`2E 78 00 00`|Zeroes out the stack pointer|
+|`movea.l #0x0, SP`|`2E 78 00 00`|Moves vector tables|
 |`jsr #$0x00XXXXMM`|`4E B9 00 XX XX MM`|Jumps to the MSU driver initialization head|
 |`tst.b D0`|`4A 00`|Check that D0 is 0 (CD driver loaded)|
 |`bne.b 0xD`|`66 0D`|Branch to return if there's no MegaCD hardware|
