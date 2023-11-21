@@ -48,6 +48,7 @@
 
 #define SUB_STAT        0x00
 #define SUB_STAT_PLAYING 0x0E
+#define SUB_STAT_TRACK  0x0C
 
 #define MAIN_CMD_PLAY   0x11    //paly and stop int the end
 #define MAIN_CMD_PLAYLP 0x12    //paly and loop
@@ -61,6 +62,7 @@
 #define SUB_STAT_INIT   0x01
 #define SUB_STAT_BUSY   0x02
 #define STATUS_PLAYING  0x04
+#define CURRENT_TRACK   0x08
 
 #define VOL_MAX         0x4000
 
