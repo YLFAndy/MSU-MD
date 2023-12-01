@@ -7,7 +7,7 @@ SET_LOOP_OFFSET
     jsr TICK_CLOCK
     rts
 SET_CDDA_VOLUME
-    move.w #$15FF,($A12010)
+    move.w #$15B2,($A12010)
     jsr TICK_CLOCK
     rts
     
@@ -31,11 +31,16 @@ PLAY_TRACK ; 41f8a
     addq.b #$1,D0 
 CHECK_0xC
     cmpi.b #$c,D0
-    bne.w CHECK_0x1B
+    bne.w CHECK_0x1C
     or.w #$1100,D0
     bra.w PLAY_COMMAND   
-CHECK_0x1B
-    cmpi.b #$1B,D0
+CHECK_0x1C
+    cmpi.b #$1C,D0
+    bne.w CHECK_0x1A
+    or.w #$1100,D0
+    bra.w PLAY_COMMAND
+CHECK_0x1A
+    cmpi.b #$1A,D0
     bne.w CHECK_0x13
     or.w #$1100,D0
     bra.w PLAY_COMMAND
@@ -263,7 +268,128 @@ GET_CURRENT_ROUND
     move.w $fc42.w,D5
     lsl.w #$8,D5
     or.w $fc44.w,D5
+    rts  
+
+    ORG $3e0f90
+    btst #$0,$c00005
+    bne SET_PAL
+    move.w #$8134,$c00004
     rts
+SET_PAL
+    move.w #$813c,$c00004
+    rts
+    
+    ORG $3e0fc0  ;167ca
+    move.w #$8760,$fc12.w
+    subq.w #$1,D2
+    beq.w CD_MENU
+    move.w #$a760,$fc12.w
+CD_MENU
+    bsr.l CHECK_CD_EXIST
+    bne.w EXIT_CD_MENU
+    lea CD_MENU_DATA(PC),A0
+    jsr $1d88
+    lea $c00000.l,A1
+    move.l CD_MENU_LAYOUT_DATA(PC), $4(A1)
+    lea CD_MENU_OPTIONS(PC),A0
+    move.w $fd00.w,D0
+    lsl.w #$2,D0
+    lea (A0,D0),A0
+    bsr.w CD_MENU_SET_VOL
+    lea (A0),A0
+    jsr $1d92
+EXIT_CD_MENU
+    move.w #$8760,$fc12.w
+    subq.w #$1,D2
+    beq EXIT_MENU
+    move.w #$a760,$fc12.w    
+EXIT_MENU
+    jmp $167da
+    
+CD_MENU_SET_VOL
+    lsr.w #$2,D0
+    move.b CD_MENU_VALUES(PC,D0),D0
+    andi.w #$00FF,D0
+    ori.w #$1500,D0
+    bsr.l CHECK_CD_READY
+    move.w D0,($A12010)
+    bsr.l TICK_CLOCK
+    rts
+
+INIT_CD_VOL_DATA ;40E
+    move.w #$4,$fd04.w
+    bsr.l CHECK_CD_EXIST
+    bne INIT_RETURN
+    move.w #$7,$fd00.w
+INIT_RETURN
+    jmp $414
+
+CD_MENU_DATA
+    DC.B $4A,$18,$00,$03,$20,$20,'CD VOL.',$00
+CD_MENU_LAYOUT_DATA
+    DC.B $4A,$2C,$00,$03
+CD_MENU_OPTIONS
+    DC.W '00',$0,'01',$0,'02',$0,'03',$0,'04',$0,'05',$0,'06',$0,'07',$0,'08',$0,'09',$0,'10',$0
+CD_MENU_VALUES
+    DC.B $00,$19,$32,$4c,$65,$7F,$99,$b2,$cc,$e5,$ff
+    
+SKIP_HIDDEN_MENU_DOWN ;16282
+    cmpi.w #$7,$a900.w
+    bne.b SKIP_JUMP_DOWN
+    bsr.l CHECK_CD_EXIST
+    beq.b SKIP_JUMP_DOWN
+    jmp $1626c
+    
+SKIP_JUMP_DOWN
+    jmp $162b4
+SKIP_HIDDEN_MENU_UP ;1624e
+    cmpi.w #$7,$a900.w
+    bne.b SKIP_JUMP_UP
+    bsr.l CHECK_CD_EXIST
+    beq.b SKIP_JUMP_UP
+    jmp $1623c
+    
+SKIP_JUMP_UP
+    jmp $162b4
+
+INCREASE_VOLUME
+    addq.w #$1,$fd00.w
+    cmpi.w #$A,$fd00.w
+    bls.w JUMP_VOLUME
+    clr.w $fd00.w
+    bra.w JUMP_VOLUME
+DECREASE_VOLUME
+    subq.w #$1,$fd00.w
+    bpl.w JUMP_VOLUME
+    move.w #$A,$fd00.w
+    bra.w JUMP_VOLUME
+
+JUMP_VOLUME
+    jmp $162b4
+    
+MENU_HANDLER ;16292
+    move.w $a900.w,D0
+    add.w D0,D0
+    cmpi.b #$E,D0
+    blt.b MENU_HANDLER_JUMP
+    beq.b TOGGLE_CD_VOLUME_MENU
+    jmp $1658c
+MENU_HANDLER_JUMP
+    jmp $16298
+TOGGLE_CD_VOLUME_MENU
+    move.b $fc09.w,D0
+    or.b $fc0b.w,D0
+    btst.l #$3,D0
+    bne.b INCREASE_VOLUME
+    btst.l #$4,D0
+    bne.b DECREASE_VOLUME
+    btst.l #$5,D0
+    bne.b INCREASE_VOLUME
+    btst #$2,D0
+    bne.b DECREASE_VOLUME
+    rts
+    
+    
     
     END    START        ; last line of source
 
