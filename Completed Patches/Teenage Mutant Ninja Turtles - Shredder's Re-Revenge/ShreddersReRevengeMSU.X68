@@ -295,7 +295,9 @@ CD_MENU
     move.w $fd00.w,D0
     lsl.w #$2,D0
     lea (A0,D0),A0
-    bsr.w CD_MENU_SET_VOL
+    ;bsr.w CD_MENU_SET_VOL
+    nop
+    nop
     lea (A0),A0
     jsr $1d92
 EXIT_CD_MENU
@@ -307,7 +309,8 @@ EXIT_MENU
     jmp $167da
     
 CD_MENU_SET_VOL
-    lsr.w #$2,D0
+    ;lsr.w #$2,D0
+    nop
     move.b CD_MENU_VALUES(PC,D0),D0
     andi.w #$00FF,D0
     ori.w #$1500,D0
@@ -331,7 +334,7 @@ CD_MENU_LAYOUT_DATA
 CD_MENU_OPTIONS
     DC.W '00',$0,'01',$0,'02',$0,'03',$0,'04',$0,'05',$0,'06',$0,'07',$0,'08',$0,'09',$0,'10',$0
 CD_MENU_VALUES
-    DC.B $00,$19,$32,$4c,$65,$7F,$99,$b2,$cc,$e5,$ff
+    DC.B $00,$19,$32,$4c,$65,$7F,$99,$b2,$cc,$e5,$ff,$00
     
 SKIP_HIDDEN_MENU_DOWN ;16282
     cmpi.w #$7,$a900.w
@@ -342,6 +345,7 @@ SKIP_HIDDEN_MENU_DOWN ;16282
     
 SKIP_JUMP_DOWN
     jmp $162b4
+    
 SKIP_HIDDEN_MENU_UP ;1624e
     cmpi.w #$7,$a900.w
     bne.b SKIP_JUMP_UP
@@ -387,11 +391,14 @@ TOGGLE_CD_VOLUME_MENU
     bne.b INCREASE_VOLUME
     btst #$2,D0
     bne.b DECREASE_VOLUME
+    move.w $fd00.w,D0
+    bsr.l CD_MENU_SET_VOL
     rts
     
     
     
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
